@@ -1,24 +1,14 @@
+Require Import Operations.
+
 Section Fields.
-  Parameter F : Set.
-  Parameter one : F.
-  Parameter zero : F.
-  Parameter add : F -> F -> F.
-  Parameter mul : F -> F -> F.
+  Variable F : Set.
+  Variable one : F.
+  Variable zero : F.
+  Variable add : Operation F.
+  Variable mul : Operation F.
   Notation "x + y" := (add x y).
   Notation "x * y" := (mul x y).
   
-  Definition Operation := F -> F -> F.
-
-  Definition Associative (f : Operation) :=
-    forall (a b c : F),
-      f a (f b c) = f (f a b) c.
-
-  Definition Commutative (f : Operation) :=
-    forall (a b : F),
-      f a b = f b a.
-  Definition IsIdentity (f : Operation) (id : F) :=
-    forall (b : F),
-      f id b = b.
   Definition AdditiveInverses :=
     forall (a : F),
       exists (b : F),
@@ -28,17 +18,18 @@ Section Fields.
       a <> zero ->
         exists (b : F),
           a * b = one.
-  Definition Distributive (f : Operation) (g : Operation) :=
+  Definition Distributive (f : Operation F) (g : Operation F) :=
     forall (a x y : F),
       a * (x + y) = (a * x) + (a * y).
   Record Field : Type := {
-      AssocAdd : Associative add;
-      AssocMul : (Associative mul);
-      CommAdd : (Commutative add);
-      CommMul : (Commutative mul);
-      ZeroIdentity : (IsIdentity add zero);
-      OneIdentity : (IsIdentity mul one);
+      AssocAdd : Associative F add;
+      AssocMul : (Associative F mul);
+      CommAdd : (Commutative F add);
+      CommMul : (Commutative F mul);
+      ZeroIdentity : (IsIdentity F add zero);
+      OneIdentity : (IsIdentity F mul one);
       InvAdd : AdditiveInverses;
       InvMult : MultiplicativeInverses;
       Dist : (Distributive mul add)
     }.
+End Fields.
